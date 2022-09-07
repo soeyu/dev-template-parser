@@ -36,8 +36,6 @@ const lgPreset: Options = {
   },
 }
 
-export type Preset = 'lg'
-
 export default {
   lg: lgPreset,
 }
