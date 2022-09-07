@@ -34,6 +34,7 @@ function transformConfig(config: Options = {}): Partial<Plugin> {
   const { httpParser = [], strParser = [], removeNfcComment = true } = config
   return {
     name: 'template-transformer',
+    enforce: 'pre',
     async transformIndexHtml(html, ctx) {
       if (!ctx?.server?.config?.env?.DEV) return html
 
