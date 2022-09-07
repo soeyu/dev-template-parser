@@ -2,15 +2,15 @@
   "name": "@soeyu/dev-template-parser",
   "version": "0.0.1-beta.0",
   "packageManager": "pnpm@7.1.1",
-  "description": "Register global imports on demand for Vite and Webpack",
+  "description": "replace template parser",
   "license": "MIT",
-  "homepage": "https://github.com/antfu/@soeyu/dev-template-parser#readme",
+  "homepage": "https://github.com/soeyu/dev-template-parser#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antfu/@soeyu/dev-template-parser.git"
+    "url": "git+https://github.com/soeyu/dev-template-parser.git"
   },
   "bugs": {
-    "url": "https://github.com/antfu/@soeyu/dev-template-parser/issues"
+    "url": "https://github.com/soeyu/dev-template-parser/issues"
   },
   "exports": {
     ".": {
