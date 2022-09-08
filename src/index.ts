@@ -7,7 +7,7 @@ import preset from './presets'
 const NFCCommentRegex = /\{#[\w\W]+?#\}/gm
 
 /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理 */
-function transiformSrc(html: string) {
+export function transiformSrc(html: string) {
   const reg = /<.*?remote.*?(?:src|href)="(.*?)".*?>/g
   let res
   // eslint-disable-next-line no-cond-assign
@@ -24,7 +24,7 @@ function transiformSrc(html: string) {
  将全部cmsPro标签替换成空
  */
 
-function transformcmsProTagToEmpty(html: string) {
+export function transformcmsProTagToEmpty(html: string) {
   const cmsProTagReg = /<(?=cmspro_)\w+\b[^<]*>|<\/(?=cmspro_)\w+\b[^<]*?>/gim
   return html.replace(cmsProTagReg, '')
 }
@@ -53,6 +53,9 @@ function transformConfig(config: Options = {}): Plugin {
         // 替换注释 nfc 注释 {# ... #}
         if (removeNfcComment) html = html.replace(NFCCommentRegex, '')
 
+        /* 南方网中 {{...}} 清空 */
+        html = html.replace(/\{\{[\w\W]*?\}\}/gm, '')
+
         // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
         for (let i = 0; i < strParser.length; i++) {
           const { from, to } = strParser[i]
@@ -71,9 +74,6 @@ function transformConfig(config: Options = {}): Plugin {
           html = html.replace(reg, value2)
         })
       }) */
-
-        /* 南方网中 {{...}} 清空 */
-        html = html.replace(/\{\{[\w\W]*?\}\}/gm, '')
 
         /* 将全部cmsPro标签替换成空 */
         html = transformcmsProTagToEmpty(html)
