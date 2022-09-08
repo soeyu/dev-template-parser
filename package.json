@@ -56,10 +56,10 @@
     "axios": "^0.27.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.26.3",
     "@types/node": "^18.7.15",
     "bumpp": "^8.2.1",
     "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
     "esno": "^0.16.3",
     "fast-glob": "^3.2.11",
     "nodemon": "^2.0.19",
