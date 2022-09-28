@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { transformcmsProTagToEmpty, transiformSrc } from '../src'
+import {
+  transformcmsProTagToEmpty,
+  transformNfcTagToEmpty,
+  transiformSrc,
+} from '../src'
 
 describe('index', () => {
   it('替换cmsPro标签', () => {
@@ -23,5 +27,22 @@ describe('index', () => {
     expect(transiformSrc(str)).toMatchInlineSnapshot(
       '"<script remote src=\\"/_src/http://www.hp.gov.cn/2021js/jquery.js\\"></script>"'
     )
+  })
+})
+
+describe('nfc', () => {
+  it('nfc前标签替换', () => {
+    const str = `<NFC_ARTICLES num="1" offset="0">`
+    expect(transformNfcTagToEmpty(str)).toBe('')
+  })
+
+  it('nfc标签闭合', () => {
+    const str = `</NFC_ARTICLES>`
+    expect(transformNfcTagToEmpty(str)).toBe('')
+  })
+
+  it('nfc标签之间有值', () => {
+    const str = `<NFC_ARTICLES num="1" offset="0">test <div>1<span>3</span></div></NFC_ARTICLES>`
+    expect(transformNfcTagToEmpty(str)).toBe('test <div>1<span>3</span></div>')
   })
 })

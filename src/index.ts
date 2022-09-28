@@ -29,6 +29,15 @@ export function transformcmsProTagToEmpty(html: string) {
   return html.replace(cmsProTagReg, '')
 }
 
+/*
+ 将全部nfc_标签替换成空
+ */
+
+export function transformNfcTagToEmpty(html: string) {
+  const nfcTagReg = /<(?=nfc_)\w+\b[^<]*>|<\/(?=nfc_)\w+\b[^<]*?>/gim
+  return html.replace(nfcTagReg, '')
+}
+
 function transformConfig(config: Options = {}): Plugin {
   const { httpParser = [], strParser = [], removeNfcComment = true } = config
   return {
@@ -75,6 +84,9 @@ function transformConfig(config: Options = {}): Plugin {
 
         /* 将全部cmsPro标签替换成空 */
         html = transformcmsProTagToEmpty(html)
+
+        /* 将全部nfc标签替换成空 */
+        html = transformNfcTagToEmpty(html)
         return html
       },
     },
