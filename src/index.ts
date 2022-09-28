@@ -49,19 +49,17 @@ function transformConfig(config: Options = {}): Plugin {
           if (res) html = html.replace(to, res.data)
         }
 
+        // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
+        for (let i = 0; i < strParser.length; i++) {
+          const { from, to } = strParser[i]
+          html = html.replace(to, from)
+        }
         /* 南方网模板处理 */
         // 替换注释 nfc 注释 {# ... #}
         if (removeNfcComment) html = html.replace(NFCCommentRegex, '')
 
         /* 南方网中 {{...}} 清空 */
         html = html.replace(/\{\{[\w\W]*?\}\}/gm, '')
-
-        // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
-        for (let i = 0; i < strParser.length; i++) {
-          const { from, to } = strParser[i]
-          html = html.replace(to, from)
-        }
-
         // 插值替换
         /* Object.entries(textInterpolation).forEach(([key, value]) => {
         // key ： NFC_CATEGORY
