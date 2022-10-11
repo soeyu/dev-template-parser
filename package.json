@@ -53,10 +53,10 @@
     "test": "vitest"
   },
   "dependencies": {
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "unplugin-combine": "^0.2.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.26.3",
     "@types/node": "^18.7.15",
     "bumpp": "^8.2.1",
     "eslint": "^8.23.0",

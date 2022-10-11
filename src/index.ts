@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { createCombinePlugin } from 'unplugin-combine'
 import type { Plugin } from 'vite'
 import type { Options, userOptions } from './types'
 
@@ -38,12 +39,12 @@ export function transformNfcTagToEmpty(html: string) {
   return html.replace(nfcTagReg, '')
 }
 
-function transformConfig(config: Options = {}): Plugin {
-  const { httpParser = [], strParser = [], removeNfcComment = true } = config
+function parserPost(config: Options = {}): Plugin {
+  const { httpParser = [], removeNfcComment = true } = config
   return {
-    name: 'dev-template-parser',
+    name: 'parser-post',
     transformIndexHtml: {
-      enforce: 'pre',
+      enforce: 'post',
       async transform(html, ctx) {
         if (!ctx?.server?.config?.env?.DEV) return html
 
@@ -58,11 +59,6 @@ function transformConfig(config: Options = {}): Plugin {
           if (res) html = html.replace(to, res.data)
         }
 
-        // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
-        for (let i = 0; i < strParser.length; i++) {
-          const { from, to } = strParser[i]
-          html = html.replace(to, from)
-        }
         /* 南方网模板处理 */
         // 替换注释 nfc 注释 {# ... #}
         if (removeNfcComment) html = html.replace(NFCCommentRegex, '')
@@ -93,11 +89,32 @@ function transformConfig(config: Options = {}): Plugin {
   }
 }
 
-export default function createPlugin(options: userOptions): Plugin {
+function parserPre(config: Options = {}): Plugin {
+  const { strParser = [] } = config
+  return {
+    name: 'parser-pre',
+    transformIndexHtml: {
+      enforce: 'pre',
+      transform(html) {
+        // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
+        for (let i = 0; i < strParser.length; i++) {
+          const { from, to } = strParser[i]
+          html = html.replace(to, from)
+        }
+        return html
+      },
+    },
+  }
+}
+
+export default function createPlugin(options: userOptions) {
   let _options: Options
   if (typeof options === 'object') _options = options
   else if (typeof options === 'string' && preset[options])
     _options = preset[options]
   else throw new Error('Invalid preset')
-  return transformConfig(_options)
+  return createCombinePlugin(() => ({
+    name: 'dev-template-parser',
+    plugins: [parserPost(_options), parserPre(_options)],
+  })).vite()
 }
