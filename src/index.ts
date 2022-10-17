@@ -43,11 +43,10 @@ function parserPost(config: Options = {}): Plugin {
   const { httpParser = [], removeNfcComment = true } = config
   return {
     name: 'parser-post',
+    apply: 'serve',
     transformIndexHtml: {
       enforce: 'post',
       async transform(html, ctx) {
-        if (!ctx?.server?.config?.env?.DEV) return html
-
         /* 公共处理 */
         /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理 
         移除，用strParser 替代
@@ -92,6 +91,7 @@ function parserPre(config: Options = {}): Plugin {
   const { strParser = [] } = config
   return {
     name: 'parser-pre',
+    apply: 'serve',
     transformIndexHtml: {
       enforce: 'pre',
       transform(html) {
