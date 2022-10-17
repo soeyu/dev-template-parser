@@ -13,7 +13,7 @@ export default defineConfig({
     Unplugin({
       httpParser: [
         {
-          from: `http://113.108.133.195:8888/NMDC_GBA/header/header.shtml`,
+          from: `http://www.lg.gov.cn/header/header.html`,
           to: '<!--#include virtual="../header/header.shtml"-->',
         },
       ],

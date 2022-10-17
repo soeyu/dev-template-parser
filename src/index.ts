@@ -49,9 +49,10 @@ function parserPost(config: Options = {}): Plugin {
         if (!ctx?.server?.config?.env?.DEV) return html
 
         /* 公共处理 */
-        /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理 */
+        /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理 
+        移除，用strParser 替代
         html = transiformSrc(html)
-
+*/
         // 替换通过链接<!--#include virtual="/header/header.html"-->的内容，httpParser属性 ，请求from的内容，并将内容替换掉to的字符
         for (let i = 0; i < httpParser.length; i++) {
           const { from, to } = httpParser[i]
@@ -81,8 +82,6 @@ function parserPost(config: Options = {}): Plugin {
         /* 将全部cmsPro标签替换成空 */
         html = transformcmsProTagToEmpty(html)
 
-        /* 将全部nfc标签替换成空 */
-        html = transformNfcTagToEmpty(html)
         return html
       },
     },
@@ -101,6 +100,10 @@ function parserPre(config: Options = {}): Plugin {
           const { from, to } = strParser[i]
           html = html.replace(to, from)
         }
+
+        /* 非合法第三方cms的单标签，无法通过vite的parse编译，所以再进入vite转换前进行替换 */
+        /* 将全部nfc标签替换成空 */
+        html = transformNfcTagToEmpty(html)
         return html
       },
     },
