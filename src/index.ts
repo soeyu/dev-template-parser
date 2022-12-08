@@ -13,7 +13,7 @@ const httpsAgent = new https.Agent({
 const instance = axios.create({
   httpsAgent,
 })
-const NFCCommentRegex = /\{#[\w\W]+?#\}/gm
+const NFCCommentRegex = /\{(#|%)[\w\W]+?\1\}/gm
 const enforceDefault = 'post'
 /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理 */
 export function transiformSrc(html: string) {
