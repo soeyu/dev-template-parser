@@ -1,4 +1,5 @@
 import axios from 'axios'
+import https from 'https'
 import { createCombinePlugin } from 'unplugin-combine'
 import type { OptionsPlugin } from 'unplugin-combine'
 import type { Plugin, PluginOption } from 'vite'
@@ -6,8 +7,14 @@ import type { Options, userOptions } from './types'
 
 import preset from './presets'
 
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+})
+const instance = axios.create({
+  httpsAgent,
+})
 const NFCCommentRegex = /\{#[\w\W]+?#\}/gm
-
+const enforceDefault = 'post'
 /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理 */
 export function transiformSrc(html: string) {
   const reg = /<.*?remote.*?(?:src|href)="(.*?)".*?>/g
@@ -41,7 +48,7 @@ export function transformNfcTagToEmpty(html: string) {
 }
 
 function parserPost(config: Options = {}): Plugin {
-  const { httpParser = [], removeNfcComment = true } = config
+  const { strParser = [], httpParser = [], removeNfcComment = true } = config
   return {
     name: 'parser-post',
     apply: 'serve',
@@ -49,14 +56,24 @@ function parserPost(config: Options = {}): Plugin {
       enforce: 'post',
       async transform(html, ctx) {
         /* 公共处理 */
-        /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理 
+        /* 在link 、 script 、img 标签中添加 remote 属性 将加入/_src/，然后进行单独代理
         移除，用strParser 替代
         html = transiformSrc(html)
 */
+
+        // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
+        for (let i = 0; i < strParser.length; i++) {
+          const { from, to, enforce = enforceDefault } = strParser[i]
+          if (enforce !== 'post') continue
+          html = html.replace(to, from)
+        }
+
         // 替换通过链接<!--#include virtual="/header/header.html"-->的内容，httpParser属性 ，请求from的内容，并将内容替换掉to的字符
         for (let i = 0; i < httpParser.length; i++) {
-          const { from, to } = httpParser[i]
-          const res = await axios.get(from).catch(console.error)
+          const { from, to, enforce = enforceDefault } = httpParser[i]
+          if (enforce !== 'post') continue
+
+          const res = await instance.get(from).catch(console.error)
           if (res) html = html.replace(to, res.data)
         }
 
@@ -89,17 +106,28 @@ function parserPost(config: Options = {}): Plugin {
 }
 
 function parserPre(config: Options = {}): Plugin {
-  const { strParser = [] } = config
+  const { strParser = [], httpParser = [] } = config
   return {
     name: 'parser-pre',
     apply: 'serve',
     transformIndexHtml: {
       enforce: 'pre',
-      transform(html) {
+      async transform(html) {
+        console.trace(+new Date())
         // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
         for (let i = 0; i < strParser.length; i++) {
-          const { from, to } = strParser[i]
+          const { from, to, enforce = enforceDefault } = strParser[i]
+          if (enforce !== 'pre') continue
           html = html.replace(to, from)
+        }
+
+        // 替换通过链接<!--#include virtual="/header/header.html"-->的内容，httpParser属性 ，请求from的内容，并将内容替换掉to的字符
+        for (let i = 0; i < httpParser.length; i++) {
+          const { from, to, enforce = enforceDefault } = httpParser[i]
+          if (enforce !== 'pre') continue
+
+          const res = await instance.get(from).catch(console.error)
+          if (res) html = html.replace(to, res.data)
         }
 
         /* 非合法第三方cms的单标签，无法通过vite的parse编译，所以再进入vite转换前进行替换 */
