@@ -113,7 +113,6 @@ function parserPre(config: Options = {}): Plugin {
     transformIndexHtml: {
       enforce: 'pre',
       async transform(html) {
-        console.trace(+new Date())
         // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
         for (let i = 0; i < strParser.length; i++) {
           const { from, to, enforce = enforceDefault } = strParser[i]
