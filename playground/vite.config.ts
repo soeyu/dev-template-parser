@@ -1,3 +1,4 @@
+import path from 'path'
 import { defineConfig } from 'vite'
 import Inspect from 'vite-plugin-inspect'
 import Unplugin from '../src/'
@@ -7,7 +8,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  base: basePath,
+  // base: basePath,
   plugins: [
     Inspect(),
     Unplugin({
@@ -15,6 +16,11 @@ export default defineConfig({
         {
           from: `http://www.lg.gov.cn/header/header.html`,
           to: '<!--#include virtual="../header/header.shtml"-->',
+        },
+        {
+          from: path.join(__dirname, '/header.html'),
+          to: '<!--#include virtual="/header.html"-->',
+          enforce: 'pre',
         },
       ],
       strParser: [

@@ -6,6 +6,7 @@ import type { Plugin, PluginOption } from 'vite'
 import type { Options, userOptions } from './types'
 
 import preset from './presets'
+import { readFile } from 'fs/promises'
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -72,9 +73,13 @@ function parserPost(config: Options = {}): Plugin {
         for (let i = 0; i < httpParser.length; i++) {
           const { from, to, enforce = enforceDefault } = httpParser[i]
           if (enforce !== 'post') continue
-
-          const res = await instance.get(from).catch(console.error)
-          if (res) html = html.replace(to, res.data)
+          if (!from.startsWith('http')) {
+            const filetext = await readFile(from)
+            html = html.replace(to, filetext.toString())
+          } else {
+            const res = await instance.get(from).catch(console.error)
+            if (res) html = html.replace(to, res.data)
+          }
         }
 
         /* 南方网模板处理 */
@@ -125,8 +130,13 @@ function parserPre(config: Options = {}): Plugin {
           const { from, to, enforce = enforceDefault } = httpParser[i]
           if (enforce !== 'pre') continue
 
-          const res = await instance.get(from).catch(console.error)
-          if (res) html = html.replace(to, res.data)
+          if (!from.startsWith('http')) {
+            const filetext = await readFile(from)
+            html = html.replace(to, filetext.toString())
+          } else {
+            const res = await instance.get(from).catch(console.error)
+            if (res) html = html.replace(to, res.data)
+          }
         }
 
         /* 非合法第三方cms的单标签，无法通过vite的parse编译，所以再进入vite转换前进行替换 */
