@@ -1,6 +1,6 @@
 export type presetParser = {
   from: string
-  to: string
+  to: string | RegExp
   /**
    * 处理时机：
    * @param  pre: 在vite处理html之前
