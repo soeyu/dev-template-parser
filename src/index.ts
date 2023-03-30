@@ -12,7 +12,12 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 })
 const instance = axios.create({
+  method: 'get',
   httpsAgent,
+  headers: {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+  },
 })
 const NFCCommentRegex = /\{(#|%)[\w\W]+?\1\}/gm
 const enforceDefault = 'post'
@@ -71,13 +76,20 @@ function parserPost(config: Options = {}): Plugin {
 
         // 替换通过链接<!--#include virtual="/header/header.html"-->的内容，httpParser属性 ，请求from的内容，并将内容替换掉to的字符
         for (let i = 0; i < httpParser.length; i++) {
-          const { from, to, enforce = enforceDefault } = httpParser[i]
+          const {
+            from,
+            to,
+            enforce = enforceDefault,
+            option = {},
+          } = httpParser[i]
           if (enforce !== 'post') continue
           if (!from.startsWith('http')) {
             const filetext = await readFile(from)
             html = html.replace(to, filetext.toString())
           } else {
-            const res = await instance.get(from).catch(console.error)
+            const res = await instance({ url: from, ...option }).catch(
+              console.error
+            )
             if (res) html = html.replace(to, res.data)
           }
         }
@@ -127,14 +139,21 @@ function parserPre(config: Options = {}): Plugin {
 
         // 替换通过链接<!--#include virtual="/header/header.html"-->的内容，httpParser属性 ，请求from的内容，并将内容替换掉to的字符
         for (let i = 0; i < httpParser.length; i++) {
-          const { from, to, enforce = enforceDefault } = httpParser[i]
+          const {
+            from,
+            to,
+            enforce = enforceDefault,
+            option = {},
+          } = httpParser[i]
           if (enforce !== 'pre') continue
 
           if (!from.startsWith('http')) {
             const filetext = await readFile(from)
             html = html.replace(to, filetext.toString())
           } else {
-            const res = await instance.get(from).catch(console.error)
+            const res = await instance({ url: from, ...option }).catch(
+              console.error
+            )
             if (res) html = html.replace(to, res.data)
           }
         }

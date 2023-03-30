@@ -18,9 +18,8 @@ export default defineConfig({
           to: '<!--#include virtual="../header/header.shtml"-->',
         },
         {
-          from: path.join(__dirname, '/header.html'),
-          to: '<!--#include virtual="/header.html"-->',
-          enforce: 'pre',
+          from: `https://shenzhen.chinatax.gov.cn/sztax/index.shtml`,
+          to: '<!--#include virtual="/footer/footer.html"-->',
         },
       ],
       strParser: [

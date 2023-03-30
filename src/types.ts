@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from 'axios'
+
 export type presetParser = {
   from: string
   to: string | RegExp
@@ -9,11 +11,11 @@ export type presetParser = {
    * @default post
    *  */
   enforce?: 'post' | 'pre'
-}[]
+}
 export type Preset = 'lg'
 export interface Options {
-  httpParser?: presetParser
-  strParser?: presetParser
+  httpParser?: (presetParser & { option?: AxiosRequestConfig })[]
+  strParser?: presetParser[]
   removeNfcComment?: Boolean
   textInterpolation?: any
 }
