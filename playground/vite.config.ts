@@ -27,6 +27,12 @@ export default defineConfig({
           from: '',
           to: '<NFC_INCLUDE src="/2021gb/meta_site.html" />',
         },
+        {
+          to: `    <link href="/res_main/css/lgzx_lgzf.css" />
+    <script src="/res_main/js/lgzx_voice.js"></script>`,
+          from: `    <link href="http://www.lg.gov.cn/res_main/css/lgzx_lgzf.css" />
+    <script src="http://www.lg.gov.cn/res_main/js/lgzx_voice.js"></script>`,
+        },
       ],
     }),
   ],
