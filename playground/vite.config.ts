@@ -18,8 +18,16 @@ export default defineConfig({
           to: '<!--#include virtual="../header/header.shtml"-->',
         },
         {
-          from: `https://shenzhen.chinatax.gov.cn/sztax/index.shtml`,
+          from: path.resolve(__dirname,'header.html'),
+          to: '<!--#include virtual="/locaheader.html"-->',
+        },
+        {
+          from: `https://shenzhen.chinatax.gov.cn/sztax/wzqt/footer/footer.shtml`,
           to: '<!--#include virtual="/footer/footer.html"-->',
+        },
+        {
+          from: `https://www.shantou.gov.cn/ymys/tb/`,
+          to: '<!--#include virtual="/footer/shantoufooter.html"-->',
         },
       ],
       strParser: [
