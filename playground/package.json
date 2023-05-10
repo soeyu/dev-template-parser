@@ -5,7 +5,7 @@
     "build": "vite build"
   },
   "devDependencies": {
-    "vite": "4.0.4",
-    "vite-plugin-inspect": "^0.7.12"
+    "vite": "4.3.5",
+    "vite-plugin-inspect": "^0.7.26"
   }
 }
