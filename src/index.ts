@@ -5,7 +5,6 @@ import type { OptionsPlugin } from 'unplugin-combine'
 import type { Plugin, PluginOption } from 'vite'
 import type { Options, userOptions } from './types'
 
-import preset from './presets'
 import { readFile } from 'fs/promises'
 
 const httpsAgent = new https.Agent({
@@ -168,19 +167,13 @@ function parserPre(config: Options = {}): Plugin {
 }
 
 function createPlugin(options: userOptions): PluginOption {
-  let _options: Options
-  if (typeof options === 'object') _options = options
-  else if (typeof options === 'string' && preset[options])
-    _options = preset[options]
-  else throw new Error('Invalid preset')
-
   return createCombinePlugin((_options: Options) => {
     const plugins: OptionsPlugin = [parserPost(_options), parserPre(_options)]
     return {
       name: 'dev-template-parser',
       plugins,
     }
-  }).vite(_options)
+  }).vite(options)
 }
 
 export default createPlugin

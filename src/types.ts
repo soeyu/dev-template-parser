@@ -12,7 +12,6 @@ export type presetParser = {
    *  */
   enforce?: 'post' | 'pre'
 }
-export type Preset = 'lg'
 export interface Options {
   httpParser?: (presetParser & { option?: AxiosRequestConfig })[]
   strParser?: presetParser[]
@@ -20,4 +19,4 @@ export interface Options {
   textInterpolation?: any
 }
 
-export type userOptions = Options | Preset
+export type userOptions = Options

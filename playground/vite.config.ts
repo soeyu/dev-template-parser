@@ -18,7 +18,7 @@ export default defineConfig({
           to: '<!--#include virtual="../header/header.shtml"-->',
         },
         {
-          from: path.resolve(__dirname,'header.html'),
+          from: path.resolve(__dirname, 'header.html'),
           to: '<!--#include virtual="/locaheader.html"-->',
         },
         {
