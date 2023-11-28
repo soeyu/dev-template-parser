@@ -58,8 +58,8 @@ function parserPost(config: Options = {}): Plugin {
     name: 'parser-post',
     apply: 'serve',
     transformIndexHtml: {
-      enforce: 'post',
-      async transform(html, ctx) {
+      order: 'post',
+      async handler(html, ctx) {
         /* 公共处理 */
         /* 删除所有\r , 确保unix系统换行兼容 */
         html = html.replaceAll(/\r/g, '')
@@ -128,8 +128,8 @@ function parserPre(config: Options = {}): Plugin {
     name: 'parser-pre',
     apply: 'serve',
     transformIndexHtml: {
-      enforce: 'pre',
-      async transform(html) {
+      order: 'pre',
+      async handler(html) {
         html = html.replaceAll(/\r/g, '')
         // 替换通过<nfc_include>标签的内容 strParser 属性添加替换目标 from 替换成 to的内容
         for (let i = 0; i < strParser.length; i++) {
