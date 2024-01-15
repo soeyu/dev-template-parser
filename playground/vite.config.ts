@@ -41,6 +41,12 @@ export default defineConfig({
           from: `    <link href="http://www.lg.gov.cn/res_main/css/lgzx_lgzf.css" />
     <script src="http://www.lg.gov.cn/res_main/js/lgzx_voice.js"></script>`,
         },
+        {
+          to: `strParser pass function`,
+          from: function (str) {
+            return str + 'success'
+          },
+        },
       ],
     }),
   ],

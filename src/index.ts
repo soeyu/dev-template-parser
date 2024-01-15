@@ -74,7 +74,11 @@ function parserPost(config: Options = {}): Plugin {
           let { to } = strParser[i]
           if (enforce !== 'post') continue
           if (typeof to == 'string') to = to.replaceAll(/\r/g, '')
-          html = html.replaceAll(to, from)
+          if (typeof from == 'string') {
+            html = html.replaceAll(to, from)
+          } else {
+            html = html.replaceAll(to, from)
+          }
         }
 
         // 替换通过链接<!--#include virtual="/header/header.html"-->的内容，httpParser属性 ，请求from的内容，并将内容替换掉to的字符
@@ -83,14 +87,18 @@ function parserPost(config: Options = {}): Plugin {
           let { to } = httpParser[i]
           if (enforce !== 'post') continue
           if (typeof to == 'string') to = to.replaceAll(/\r/g, '')
-          if (!from.startsWith('http')) {
-            const filetext = await readFile(from)
-            html = html.replaceAll(to, filetext.toString())
+          if (typeof from == 'string') {
+            if (!from.startsWith('http')) {
+              const filetext = await readFile(from)
+              html = html.replaceAll(to, filetext.toString())
+            } else {
+              const res = await instance({ url: from, ...option }).catch(
+                console.error
+              )
+              if (res) html = html.replaceAll(to, res.data)
+            }
           } else {
-            const res = await instance({ url: from, ...option }).catch(
-              console.error
-            )
-            if (res) html = html.replaceAll(to, res.data)
+            html = html.replaceAll(to, from)
           }
         }
 
@@ -137,7 +145,11 @@ function parserPre(config: Options = {}): Plugin {
           let { to } = strParser[i]
           if (enforce !== 'pre') continue
           if (typeof to == 'string') to = to.replaceAll(/\r/g, '')
-          html = html.replaceAll(to, from)
+          if (typeof from == 'string') {
+            html = html.replaceAll(to, from)
+          } else {
+            html = html.replaceAll(to, from)
+          }
         }
 
         // 替换通过链接<!--#include virtual="/header/header.html"-->的内容，httpParser属性 ，请求from的内容，并将内容替换掉to的字符
@@ -146,14 +158,18 @@ function parserPre(config: Options = {}): Plugin {
           let { to } = httpParser[i]
           if (enforce !== 'pre') continue
           if (typeof to == 'string') to = to.replaceAll(/\r/g, '')
-          if (!from.startsWith('http')) {
-            const filetext = await readFile(from)
-            html = html.replaceAll(to, filetext.toString())
+          if (typeof from == 'string') {
+            if (!from.startsWith('http')) {
+              const filetext = await readFile(from)
+              html = html.replaceAll(to, filetext.toString())
+            } else {
+              const res = await instance({ url: from, ...option }).catch(
+                console.error
+              )
+              if (res) html = html.replaceAll(to, res.data)
+            }
           } else {
-            const res = await instance({ url: from, ...option }).catch(
-              console.error
-            )
-            if (res) html = html.replaceAll(to, res.data)
+            html = html.replaceAll(to, from)
           }
         }
 

@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios'
 
 export type presetParser = {
-  from: string
+  from: string | ((substring: string, ...args: any[]) => string)
   to: string | RegExp
   /**
    * 处理时机：
